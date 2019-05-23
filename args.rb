@@ -107,9 +107,25 @@ class Args
     end
 
     def set_value(arguments)
+      number_list = arguments.shift
+      number_list.split(",").each {|number|
+        @value << number.to_f
+      }
+    end
+  end
+
+  class StringListMarshaler
+    Parser.add_declarator("string_list", self.name)
+    attr_accessor :value
+
+    def initialize
+      @value = []
+    end
+
+    def set_value(arguments)
       string_list = arguments.shift
       string_list.split(",").each {|string|
-        @value << string.to_f
+        @value << string.to_s
       }
     end
   end

@@ -1,7 +1,7 @@
 require 'rubygems'
 gem 'rspec'
 require 'rspec'
-require 'args'
+require './args'
 
 describe Args, "With no arguments" do
   before do
@@ -156,6 +156,42 @@ describe Args, "With a single number-list element" do
     @parser.parse %w(-l 1,2,3,4)
     @parser.should be_valid
     @parser["l"].should == [1, 2, 3, 4]
+  end
+end
+
+describe Args, "With a single string list element" do
+  before do
+    @parser = Args.expect do
+      string_list "sl"
+    end
+  end
+
+  it "should report empty list if no argument" do
+    @parser.parse []
+    @parser.should be_valid
+    @parser["sl"].should be_empty
+  end
+
+  it "should assign list of strings from argument" do
+    @parser.parse(%w(-sl I,am,Ricky))
+    @parser.should be_valid
+    @parser["sl"].should == ['I', 'am', 'Ricky']
+  end
+end
+
+# make sure you have a test with a negative integer (confusing - sign)
+# the order of the arguments need not match the order given in the schema.
+describe Args, "With a negative number list" do
+  before do
+    @parser = Args.expect do
+      number_list "nl"
+    end
+  end
+
+  it "should assign list of numbers from argument" do
+    @parser.parse %w(-nl -1,2,-3,4)
+    @parser.should be_valid
+    @parser["nl"].should == [-1, 2, -3, 4]
   end
 end
 
